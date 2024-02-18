@@ -6,12 +6,17 @@
 /*   By: oumimoun <oumimoun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/05 16:09:43 by oumimoun          #+#    #+#             */
-/*   Updated: 2024/02/14 22:57:33 by oumimoun         ###   ########.fr       */
+/*   Updated: 2024/02/17 13:49:37 by oumimoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../pipex.h"
 
+
+void f()
+{
+    system("lsof -c pipex");
+}
 void *second_process(t_data *data, char **argv, char **envp)
 {
     char *path;
@@ -34,7 +39,7 @@ void *second_process(t_data *data, char **argv, char **envp)
     path = check_path(cmd[0], envp);
     close(data->outfile);
     execve(path, cmd, envp);
-    ft_print_error("Error");
+    ft_print_error("Error in execve()");
     return (ft_free(cmd), free(path), path = NULL, NULL);
 }
 
@@ -80,7 +85,6 @@ void pipex(t_data *data, char **argv, char **envp)
         ft_print_error("Error in fork()");
     if (child1_id == 0)
         first_process(data, argv, envp);
-
     child2_id = fork();
     if (child2_id == -1)
         ft_print_error("Error in fork()");
@@ -102,7 +106,7 @@ void leak(void)
 int main(int argc, char **argv, char **envp)
 {
     t_data data;
-    // atexit(f);
+    atexit(f);
     if (!envp)
         ft_print_error("Error empty environement");
     if (argc != 5)

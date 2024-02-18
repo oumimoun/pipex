@@ -6,7 +6,7 @@
 /*   By: oumimoun <oumimoun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/06 16:52:57 by oumimoun          #+#    #+#             */
-/*   Updated: 2024/02/14 22:42:42 by oumimoun         ###   ########.fr       */
+/*   Updated: 2024/02/17 23:48:30 by oumimoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,8 @@ typedef struct s_data
     int outfile;
     int pd[2];
     int ac;
-
+    int i;
+    // pid_t child_id;
 } t_data;
 
 char **ft_split(char const *s, char c);
