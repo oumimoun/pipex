@@ -14,7 +14,9 @@ SRC_BONUS = ./bonus/pipex_bonus.c \
 	./bonus/ft_print_error.c \
 	./bonus/ft_free.c \
 	./bonus/ft_strlen.c \
-	./bonus/ft_strjoin.c
+	./bonus/ft_strjoin.c \
+	./get_next_line/get_next_line_utils.c \
+	./get_next_line/get_next_line.c
 
 OBJ_BONUS = $(SRC_BONUS:.c=.o)
 

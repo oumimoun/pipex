@@ -6,7 +6,7 @@
 /*   By: oumimoun <oumimoun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/06 16:52:57 by oumimoun          #+#    #+#             */
-/*   Updated: 2024/02/18 17:04:27 by oumimoun         ###   ########.fr       */
+/*   Updated: 2024/02/20 22:06:59 by oumimoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,8 @@ typedef struct s_data
     int ac;
     int i;
     int save;
+    char *LIMITER;
+    int flag;
     // pid_t child_id;
 } t_data;
 
@@ -37,10 +39,10 @@ char **ft_split(char const *s, char c);
 char *ft_strjoin(char *s1, char *s2);
 char *check_path(char *cmd, char **envp);
 char **ft_get_paths(char **envp);
-int ft_strncmp(char *s1, char *s2, unsigned int n);
 void ft_print_error(char *str);
 int ft_strlen(char *str);
 void ft_free(char **result);
-
+int ft_strncmp(char *s1, char *s2, unsigned int n);
+int ft_strcmp(char *s1, char *s2);
 
 #endif
