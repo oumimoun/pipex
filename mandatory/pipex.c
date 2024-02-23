@@ -6,17 +6,17 @@
 /*   By: oumimoun <oumimoun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/05 16:09:43 by oumimoun          #+#    #+#             */
-/*   Updated: 2024/02/17 13:49:37 by oumimoun         ###   ########.fr       */
+/*   Updated: 2024/02/22 20:20:01 by oumimoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../pipex.h"
 
-
 void f()
 {
     system("lsof -c pipex");
 }
+
 void *second_process(t_data *data, char **argv, char **envp)
 {
     char *path;

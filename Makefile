@@ -15,6 +15,8 @@ SRC_BONUS = ./bonus/pipex_bonus.c \
 	./bonus/ft_free.c \
 	./bonus/ft_strlen.c \
 	./bonus/ft_strjoin.c \
+	./bonus/ft_multiple_pipes.c \
+	./bonus/ft_here_doc.c \
 	./get_next_line/get_next_line_utils.c \
 	./get_next_line/get_next_line.c
 

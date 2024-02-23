@@ -6,7 +6,7 @@
 /*   By: oumimoun <oumimoun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/08 15:43:59 by oumimoun          #+#    #+#             */
-/*   Updated: 2024/02/14 22:57:29 by oumimoun         ###   ########.fr       */
+/*   Updated: 2024/02/21 18:28:41 by oumimoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,11 +18,18 @@ char *check_path(char *cmd, char **envp)
     char *full_path;
     int i;
 
-    i = 0;
+    i = -1;
     if (access(cmd, F_OK | R_OK | X_OK) == 0)
-        return cmd;
+        return (cmd);
+    if (ft_strncmp(cmd, "/", 1) == 0)
+    {
+        if (access(cmd, F_OK | R_OK | X_OK) == 0)
+            return (cmd);
+        else
+            ft_print_error("Error in cmd path");
+    }
     paths = ft_get_paths(envp);
-    while (paths && paths[i])
+    while (paths && paths[++i])
     {
         full_path = ft_strjoin(paths[i], "/");
         full_path = ft_strjoin(full_path, cmd);
@@ -30,7 +37,6 @@ char *check_path(char *cmd, char **envp)
             return (full_path);
         free(full_path);
         full_path = NULL;
-        i++;
     }
     return (NULL);
 }
