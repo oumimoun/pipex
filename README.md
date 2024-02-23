@@ -85,6 +85,10 @@ This explanation unveils the intricate workings of pipelines and interprocess co
 
 ## Resources
 
+https://csnotes.medium.com/pipex-tutorial-42-project-4469f5dd5901
+
+https://www.rozmichelle.com/pipes-forks-dups/#pipelines
+
 https://www.codequoi.com/en/pipe-an-inter-process-communication-method/
 
 https://www.geeksforgeeks.org/pipe-system-call/
@@ -94,3 +98,7 @@ https://www.it.uu.se/education/course/homepage/dsp/vt21/modules/module-2/pipelin
 https://phoenixnap.com/kb/bash-heredoc#:~:text=A%20HereDoc%20is%20a%20multiline,neater%20and%20easier%20to%20understand
 
 https://www.codequoi.com/en/handling-a-file-by-its-descriptor-in-c/
+
+https://www.codequoi.com/en/pipex-reproducing-the-pipe-operator-in-c/
+
+https://medium.com/@lannur-s/pipex-42-chapter-1-metamorphosis-execve-1a4710ab8cb1
