@@ -1,109 +1,30 @@
-# pipex
-pipes are actually just buffered streams that are associated with two file descriptors that are set up so that the first one can read in data that is written to the second one.
+<center>
 
-## Note
-The file descriptors in the array pd[2] that got returned from `pipe()` are set up so that what is written to 4 can be read from 3.
-`fork()` job is to creates a clone of the parent’s memory state and file descriptors.
+# Understanding Pipelines and Interprocess Communication in C ![pipe](./pictures/pipe.png)
 
+</center>
 
-### File Descriptors and Piping in Bash:
-
-In Bash, a file descriptor is a unique identifier used to access files or streams. There are three default file descriptors:
-
-- `0` (stdin): Standard input.
-- `1` (stdout): Standard output.
-- `2` (stderr): Standard error.
-
-### Visual Explanation of `pipex` Function:
-
-```
-               [Parent Process]
-                    /    \
-      [Child Process 1]   [Child Process 2]
-            (cmd1)               (cmd2)
-               |                    |
-     data->infile = open         data->pd[1]
-               |                    |
-          dup2(infile, 0)      dup2(pd[1], 1)
-               |                    |
-         close(infile)          close(pd[1])
-               |                    |
-            execve()             execve()
-```
-
-
-### Data Flow:
-- The input data comes from the specified input file.
-- The output of this process is redirected to the write end of the pipe (`pd[1]`), which will be read by the second process through its `stdin`.
-
-### Visual Explanation:
-
-```
-              [Parent Process]
-                  /       \
-   [Child Process 1]       [Child Process 2]
-    (cmd1, input)           (cmd2, output)
-         |                       |
-         |                       |
-    [Pipe Input]           [Pipe Output]
-```
-
-### `first_process` Function:
-
-1. Closes the read end of the pipe `data->pd[0]`.
-2. Opens the input file (`argv[1]`) for reading.
-3. Checks if opening the input file fails, closes the write end of the pipe, prints an error message, and returns NULL.
-4. Redirects the standard input (`0`) to the input file descriptor (`data->infile`) using `dup2()`.
-5. Redirects the standard output (`1`) to the write end of the pipe (`data->pd[1]`) using another `dup2()`.
-6. Closes the write end of the pipe.
-7. Splits the second command (`argv[2]`) and finds its path.
-8. Closes the input file descriptor.
-9. Executes the command using `execve()`. If execution fails, prints an error message.
-10. Frees allocated memory and returns NULL.
-
-### `second_process` Function:
-
-1. Closes the write end of the pipe `data->pd[1]`.
-2. Opens the output file (`argv[4]`) for writing or creates it if it doesn't exist.
-3. Checks if opening the output file fails, closes the read end of the pipe, prints an error message, and returns NULL.
-4. Redirects the standard output (`1`) to the output file descriptor (`data->outfile`) using `dup2()`.
-5. Redirects the standard input (`0`) to the read end of the pipe (`data->pd[0]`) using another `dup2()`.
-6. Closes the read end of the pipe.
-7. Splits the third command (`argv[3]`) and finds its path.
-8. Closes the output file descriptor.
-9. Executes the command using `execve()`. If execution fails, prints an error message.
-10. Frees allocated memory and returns NULL.
-
-### Data Flow:
-
-- The `first_process` reads from the input file and writes to the pipe.
-- The data written by `first_process` is read by `second_process` from the pipe.
-- `second_process` then writes its output to the output file.
-
-
-# Understanding Pipelines and Interprocess Communication in C
-
-Pipelines are a fundamental concept in Unix-like operating systems, facilitating communication between processes by allowing the output of one process to become the input of another. In C programming, the `pipe()` function is used to create interprocess communication channels, which are implemented as unidirectional pipes. Let's delve deeper into how pipelines work and how they are implemented in C.
+Pipelines serve as a cornerstone in Unix-like operating systems, enabling seamless communication between processes by allowing the output of one process to become the input of another. In C programming, the `pipe()` function plays a pivotal role in establishing interprocess communication channels through unidirectional pipes. Let's embark on a deeper exploration into the workings of pipelines and their implementation in C.
 
 ## Pipelines in Unix-like Systems:
 
-In Bash and other Unix-like shells, pipelines enable the chaining of multiple commands together, where the output of one command is directed as input to the next command. This is accomplished using the pipe operator `|`. For example:
+In Unix-like shells such as Bash, pipelines facilitate the concatenation of multiple commands, where the output of one command seamlessly flows into the input of the next. This orchestration is achieved effortlessly using the pipe operator `|`. For instance:
 
 ```bash
 command1 | command2
 ```
 
-Here, the output of `command1` is redirected as input to `command2`, forming a pipeline.
+Here, the output generated by `command1` serves as the input for `command2`, effectively creating a pipeline for data flow.
 
 ## The `pipe()` Function in C:
 
-In C programming, the `pipe()` function is used to create a unidirectional pipe, which establishes a communication channel between two processes. The function signature is:
+At its core, pipes are buffered streams intricately tied to two file descriptors, meticulously set up to allow the transfer of data from one end to another. In the realm of C programming, the `pipe()` function emerges as the conduit for constructing unidirectional pipes. Its function signature reads:
 
 ```c
 int pipe(int pipefd[2]);
 ```
 
-The `pipefd` parameter is an array of two integers, where `pipefd[0]` represents the read end of the pipe and `pipefd[1]` represents the write end. Data written into `pipefd[1]` can be read from `pipefd[0]`, enabling communication between the two processes.
+The `pipefd` array encapsulates two integers, where `pipefd[0]` embodies the read end of the pipe, while `pipefd[1]` embodies the write end. Data written into `pipefd[1]` can be subsequently retrieved from `pipefd[0]`, thereby fostering communication between the paired processes.
 
 ## Visual Explanation of Pipes:
 
@@ -115,22 +36,59 @@ The `pipefd` parameter is an array of two integers, where `pipefd[0]` represents
            Read end                   Write end
 ```
 
-In the visual representation above:
-- `pd[0]` represents the read end of the pipe, where data written by Process B can be read by Process A.
-- `pd[1]` represents the write end of the pipe, where data written by Process A can be read by Process B.
+This visual schema delineates the essence of pipes, showcasing `pd[0]` as the read end, where data inscribed by Process B awaits consumption by Process A. Conversely, `pd[1]` stands as the write end, channeling data penned by Process A to the eager embrace of Process B.
 
 ## Process Management in C:
 
-To utilize pipelines in C, processes are typically managed using functions like `fork()`, `execve()`, `dup2()`, and `close()`.
-- `fork()`: Creates a new process by duplicating the calling process. After forking, two processes are created - the parent and the child.
-- `execve()`: Executes a file in the context of the calling process. It replaces the current process image with a new one specified by the file path provided.
-- `dup2()`: Duplicates one file descriptor to another specific descriptor. It's commonly used to redirect standard input and output.
-- `close()`: Closes a file descriptor, freeing up system resources.
+In C programming, managing processes when using pipelines requires using a set of functions like `fork()`, `execve()`, `dup2()`, and `close()`.
 
-## Summary:
+- **`fork()`:** This function creates a new process by making a copy of the current one. When `fork()` is called, two processes are created: the parent and the child. The parent process continues its execution from where `fork()` was called, while the child process starts from the same point but with a different process ID (PID). Additionally, if a pipe was previously created using `pipe()`, the file descriptors obtained from the pipe are shared between the parent and child processes. This means that data written to one descriptor can be read from the other. `fork()` essentially duplicates the parent's memory and file descriptors for the child, allowing them to share information and work together.
 
-Pipelines are a powerful mechanism for connecting multiple processes and enabling communication between them. In C, the `pipe()` function, along with process management functions like `fork()`, `execve()`, `dup2()`, and `close()`, provides the necessary tools to implement pipelines and interprocess communication efficiently.
+## Integration with `fork()` for Interprocess Communication:
 
-Understanding these concepts is essential for developing robust system utilities and handling processes effectively in C programming. By mastering pipelines and interprocess communication, developers can create sophisticated applications that leverage the full capabilities of Unix-like operating systems.
+Combining `fork()` with `pipe()` opens up opportunities for communication between processes. After the parent and child processes are created, they both have access to the same file descriptors, which are provided by the `pipe()`. This shared connection allows them to easily exchange data through the pipe. This communication isn't just about transferring data; it enables synchronization and collaboration between processes. This collaboration is essential for tasks like shell scripting and concurrent programming, allowing for more complex and efficient operations.
 
-Here is a visulisation of what is going to happend in this code keep in mind that pipe os forked in the parent process and even we use it on the child it change also the parent onr 
+![sharing-pipe](./pictures/sharing-pipe.jpg)
+
+- **`execve()`:** This function is like the conductor of an orchestra. It helps start a new process by replacing the current process with a new one based on a specific file. Imagine you have a new piece of music (the new process), and `execve()` is the conductor who starts playing it, replacing the old piece.
+
+- **`dup2()`:** Think of `dup2()` as a magic spell that makes an exact copy of one magic wand (file descriptor) and puts it into another wand. This is often used to redirect where the input and output of a process go. For example, if you want the output to go somewhere different than usual, `dup2()` can make that happen by copying the output wand to a new location.
+
+- **`close()`:** When a file is no longer needed, `close()` is like closing a book after finishing reading it. It's a way to let the system know that a file or resource is done being used, freeing up space and resources for other tasks.
+
+In simpler terms, `execve()` starts a new task, `dup2()` can change where the task's input and output go, and `close()` finishes up and cleans things up when the task is done.
+
+### Visual Explanation of `pipex` Function:
+
+```
+              [Parent Process]
+                  /       \
+   [Child Process 1]       [Child Process 2]
+    (cmd1, input)           (cmd2, output)
+         |                       |
+         |                       |
+    [Pipe Input]           [Pipe Output]
+```
+
+![pipex](./pictures/pipex_digram.png)
+
+When we use `fork()` along with `pipe()` for interprocess communication, it's like a parent creating two children. One child, let's call it Child Process 1, is responsible for taking input from `cmd1`. The other child, Child Process 2, is ready to give the results to `cmd2`. The pipe acts like a bridge between these children, making it easy for them to share information. It's like a secret passage that allows data to flow smoothly from input to output, making communication between the processes effortless.
+
+### Data Flow:
+
+- The input data originates from the designated input file. It then travels through the first process (`cmd1`), which acts upon it according to its instructions.
+- The processed data is then sent to the write end (`pd[1]`) of the pipe, where it awaits consumption by the second process (Child Process 2). This data can be read by Child Process 2 through its standard input (`stdin`).
+
+This explanation unveils the intricate workings of pipelines and interprocess communication in C, inviting exploration and innovation in the realm of programming.
+
+## Resources
+
+https://www.codequoi.com/en/pipe-an-inter-process-communication-method/
+
+https://www.geeksforgeeks.org/pipe-system-call/
+
+https://www.it.uu.se/education/course/homepage/dsp/vt21/modules/module-2/pipeline/
+
+https://phoenixnap.com/kb/bash-heredoc#:~:text=A%20HereDoc%20is%20a%20multiline,neater%20and%20easier%20to%20understand
+
+https://www.codequoi.com/en/handling-a-file-by-its-descriptor-in-c/
