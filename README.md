@@ -1,8 +1,10 @@
-<center>
+<div align="center">
 
-# Understanding Pipelines and Interprocess Communication in C ![pipe](./pictures/pipe.png)
+<img src="./pictures/pipe.png" alt="pipe" width="100" align="right">
 
-</center>
+# Understanding Pipelines in C
+</div>
+
 
 Pipelines serve as a cornerstone in Unix-like operating systems, enabling seamless communication between processes by allowing the output of one process to become the input of another. In C programming, the `pipe()` function plays a pivotal role in establishing interprocess communication channels through unidirectional pipes. Let's embark on a deeper exploration into the workings of pipelines and their implementation in C.
 
