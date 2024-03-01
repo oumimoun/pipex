@@ -1,24 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strlen.c                                        :+:      :+:    :+:   */
+/*   ft_print_error_bonus.c                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: oumimoun <oumimoun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/02/12 17:32:07 by oumimoun          #+#    #+#             */
-/*   Updated: 2024/02/14 22:56:46 by oumimoun         ###   ########.fr       */
+/*   Created: 2024/02/12 15:44:23 by oumimoun          #+#    #+#             */
+/*   Updated: 2024/03/01 19:41:23 by oumimoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../pipex.h"
 
-int ft_strlen(char *str)
+void	ft_print_error(char *str)
 {
-    int i;
-    i = 0;
-    while (str[i])
-    {
-        i++;
-    }
-    return (i);
+	int	i;
+
+	i = 0;
+	while (str[i])
+	{
+		write(2, &str[i], 1);
+		i++;
+	}
+	write(2, "\n", 1);
+	exit(1);
 }

@@ -1,27 +1,41 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_print_error.c                                   :+:      :+:    :+:   */
+/*   ft_strjoin_bonus.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: oumimoun <oumimoun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/02/12 15:44:23 by oumimoun          #+#    #+#             */
-/*   Updated: 2024/02/17 16:06:04 by oumimoun         ###   ########.fr       */
+/*   Created: 2024/02/12 15:52:32 by oumimoun          #+#    #+#             */
+/*   Updated: 2024/03/01 18:17:38 by oumimoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../pipex.h"
 
-void	ft_print_error(char *str)
+char	*ft_strjoin(char *s1, char *s2)
 {
-	int	i;
+	int		i;
+	int		len;
+	char	*result;
 
 	i = 0;
-	while (str[i])
+	if (!s1 || !s2)
+		return (NULL);
+	len = ft_strlen(s2) + ft_strlen(s1);
+	result = (char *)malloc((len + 1) * sizeof(char));
+	if (!result)
+		return (0);
+	while (s1[i])
 	{
-		write(2, &str[i], 1);
+		result[i] = s1[i];
 		i++;
 	}
-	write(2, "\n", 1);
-	exit(1);
+	i = 0;
+	while (s2[i])
+	{
+		result[ft_strlen(s1) + i] = s2[i];
+		i++;
+	}
+	result[i + ft_strlen(s1)] = '\0';
+	return (result);
 }

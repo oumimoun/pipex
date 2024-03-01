@@ -1,41 +1,59 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strjoin.c                                       :+:      :+:    :+:   */
+/*   ft_itoa_bonus.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: oumimoun <oumimoun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/02/12 15:52:32 by oumimoun          #+#    #+#             */
-/*   Updated: 2024/02/14 22:56:42 by oumimoun         ###   ########.fr       */
+/*   Created: 2024/02/29 16:55:49 by oumimoun          #+#    #+#             */
+/*   Updated: 2024/03/01 18:17:19 by oumimoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../pipex.h"
 
-char	*ft_strjoin(char *s1, char *s2)
+static int	len_result(int n)
 {
-	int		i;
+	int	len;
+
+	len = 0;
+	if (n < 0)
+	{
+		n *= (-1);
+		len++;
+	}
+	while (n > 0)
+	{
+		n /= 10;
+		len++;
+	}
+	return (len);
+}
+
+char	*ft_itoa(int n)
+{
 	int		len;
 	char	*result;
 
-	i = 0;
-	if (!s1 || !s2)
-		return (NULL);
-	len = ft_strlen(s2) + ft_strlen(s1);
-	result = (char *)malloc((len + 1) * sizeof(char));
+	if (n == -2147483648)
+		return ("-2147483648");
+	if (n == 0)
+		return ("0");
+	len = len_result(n);
+	result = (char *)malloc((sizeof(char) * (len + 1)));
 	if (!result)
-		return (0);
-	while (s1[i])
+		return (NULL);
+	result[len--] = '\0';
+	if (n < 0)
 	{
-		result[i] = s1[i];
-		i++;
+		result[0] = '-';
+		n *= -1;
 	}
-	i = 0;
-	while (s2[i])
+	while (n > 0)
 	{
-		result[ft_strlen(s1) + i] = s2[i];
-		i++;
+		result[len] = 48 + (n % 10);
+		n /= 10;
+		len--;
 	}
-	result[i + ft_strlen(s1)] = '\0';
 	return (result);
 }
