@@ -1,5 +1,7 @@
 HEADER = pipex.h
+
 CC = cc
+
 CFLAGS = -Wall -Werror -Wextra
 
 NAME = pipex
